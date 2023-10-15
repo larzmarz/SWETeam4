@@ -7,14 +7,15 @@ app = Flask(__name__)
 # MongoDB setup
 client = MongoClient('mongodb://localhost:27017/')
 db = client['geektext']
-books_collection = db['profile']
+users_collection = db['usernames']  # Using a MongoDB collection for users
+credit_cards_collection = db['credit_cards']  # Using a MongoDB collection for credit cards
 
-
+# MySQL setup
 conn = mysql.connector.connect(
     host="localhost",
     user="your_username",
     password="your_password",
-    database="geektext"
+    database="SWETeam4"
 )
 
 cursor = conn.cursor()
