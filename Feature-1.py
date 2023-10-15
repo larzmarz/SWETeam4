@@ -58,6 +58,7 @@ def discount_books_by_publisher():
         
         for book in books:
             new_price = book['price'] * (1 - discount_percent/100)
+            new_price = round(new_price, 2)
             books_collection.update_one({"_id": book['_id']}, {"$set": {"price": new_price}})
         
         return jsonify({"message": "Prices updated successfully!"})
