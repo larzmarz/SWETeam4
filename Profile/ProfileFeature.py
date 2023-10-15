@@ -4,10 +4,6 @@ import mysql.connector
 
 app = Flask(__name__)
 
-users = {}  # A simple in-memory database for demonstration purposes
-credit_cards = {}  # Another in-memory database for credit cards
-
-
 # MongoDB setup
 client = MongoClient('mongodb://localhost:27017/')
 db = client['geektext']
