@@ -1,59 +1,76 @@
 from flask import Flask, jsonify, request
+from dotenv import load_dotenv
+import os
 from pymongo import MongoClient
-import mysql.connector
+from pymongo.server_api import ServerApi
 
 app = Flask(__name__)
 
 # MongoDB setup
-client = MongoClient('mongodb://localhost:27017/')
-db = client['geektext']
-users_collection = db['usernames']  # Using a MongoDB collection for users
+uri = "mongodb+srv://laurys3577:geektext@sweteam4.cebkbje.mongodb.net/"
+
+client = MongoClient(uri)
+# Send a ping to confirm a successful connection
+try:
+    client.admin.command('ping')
+    print("Pinged your deployment. You successfully connected to MongoDB!")
+except Exception as e:
+    print(e)
+
+db = client['geek_text']
+users_collection = db['users']  # Using a MongoDB collection for users
 credit_cards_collection = db['credit_cards']  # Using a MongoDB collection for credit cards
 
-# MySQL setup
-conn = mysql.connector.connect(
-    host="localhost",
-    user="your_username",
-    password="your_password",
-    database="SWETeam4"
-)
-
-cursor = conn.cursor()
-
+# Creating a new user
 @app.route('/users', methods=['POST'])
 def create_user():
     data = request.json
     username = data.get('username')
-    if username in users:
+    existing_user = users_collection.find_one({'username': username})
+    if existing_user:
         return jsonify({"message": "Username already exists"}), 400
-    users[username] = data
+    users_collection.insert_one(data)
     return '', 201  # 201 means "Created"
 
-
-@app.route('/users/<username>', methods=['GET'])
+# Retrieving a specific user
+@app.route('/users/<string:username>', methods=['GET'])
 def get_user(username):
-    user = users.get(username)
+    user = users_collection.find_one({'username': username})
+    if user:
+        # Convert ObjectId to string because it's not JSON serializable
+        user['_id'] = str(user['_id'])
+        return jsonify(user), 200
+    else:
+        return jsonify({"message": "User not found"}), 404
+
+# updating user profile
+@app.route('/users/<string:username>', methods=['PUT'])
+def update_user(username):
+    data = request.json
+
+    # Check if the user exists
+    user = users_collection.find_one({'username': username})
     if not user:
         return jsonify({"message": "User not found"}), 404
-    return jsonify(user)
+    # Remove the email field from the incoming data to ensure it's not updated
+    data.pop('email', None)
+    # Update the user's details
+    users_collection.update_one({'username': username}, {"$set": data})
+    return jsonify({"message": "User updated successfully"}), 200
 
 
-@app.route('/users/<username>', methods=['PUT'])
-def update_user(username):
-    if username not in users:
-        return jsonify({"message": "User not found"}), 404
+@app.route('/addCreditCard', methods=['POST'])
+def add_credit_card():
     data = request.json
-    # Prevent updating email
-    data.pop('email_address', None)
-    users[username].update(data)
-    return '', 200  # 200 means "OK"
+    username = data['username']
+    credit_card = data['creditCard']
 
+    user = users_collection.find_one({'username': username})
 
-@app.route('/users/<username>/credit-card', methods=['POST'])
-def create_credit_card(username):
-    if username not in users:
-        return jsonify({"message": "User not found"}), 404
-    data = request.json
-    credit_cards[username] = data
-    return '', 201
+    if user:
+        credit_card['userId'] = user['_id']
+        credit_cards_collection.insert_one(credit_card)
+        return jsonify({'message': 'Credit card added successfully'}), 200
+    else:
+        return jsonify({'message': 'User not found'}), 404
 
