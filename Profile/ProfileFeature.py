@@ -1,8 +1,5 @@
-from flask import Flask, jsonify, request
-from dotenv import load_dotenv
-import os
-from pymongo import MongoClient
-from pymongo.server_api import ServerApi
+from flask import Flask, jsonify, request, abort
+from pymongo import MongoClient, DESCENDING
 
 app = Flask(__name__)
 
@@ -64,3 +61,5 @@ def add_credit_card():
     else:
         return jsonify({'message': 'User not found'}), 404
 
+if __name__ == '__main__':
+    app.run()
