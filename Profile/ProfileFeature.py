@@ -7,16 +7,7 @@ from pymongo.server_api import ServerApi
 app = Flask(__name__)
 
 # MongoDB setup
-uri = "mongodb+srv://laurys3577:geektext@sweteam4.cebkbje.mongodb.net/"
-
-client = MongoClient(uri)
-# Send a ping to confirm a successful connection
-try:
-    client.admin.command('ping')
-    print("Pinged your deployment. You successfully connected to MongoDB!")
-except Exception as e:
-    print(e)
-
+client = MongoClient('mongodb://localhost:27017/')
 db = client['geek_text']
 users_collection = db['users']  # Using a MongoDB collection for users
 credit_cards_collection = db['credit_cards']  # Using a MongoDB collection for credit cards
@@ -37,14 +28,13 @@ def create_user():
 def get_user(username):
     user = users_collection.find_one({'username': username})
     if user:
-        # Convert ObjectId to string because it's not JSON serializable
         user['_id'] = str(user['_id'])
         return jsonify(user), 200
     else:
         return jsonify({"message": "User not found"}), 404
 
 # updating user profile
-@app.route('/users/<string:username>', methods=['PUT'])
+@app.route('/users/<string:username>', methods=['PUT','PATCH'])
 def update_user(username):
     data = request.json
 
