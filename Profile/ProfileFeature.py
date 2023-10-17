@@ -62,4 +62,4 @@ def add_credit_card():
         return jsonify({'message': 'User not found'}), 404
 
 if __name__ == '__main__':
-    app.run()
+    app.run(debug=True)
