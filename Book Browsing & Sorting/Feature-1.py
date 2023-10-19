@@ -1,4 +1,4 @@
-from ..DatabaseWrapper import Flask, jsonify, request, abort, DESCENDING, DatabaseWrapper
+from Database import Flask, jsonify, request, abort, DESCENDING, DatabaseWrapper
 
 app = Flask(__name__)
 
