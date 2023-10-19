@@ -1,12 +1,11 @@
-from flask import Flask, jsonify, request, abort
-from pymongo import MongoClient, DESCENDING
+from DatabaseWrapper import Flask, jsonify, request, abort, DESCENDING, DatabaseWrapper
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://localhost:27017/')
-db = client['geek_text_db']
+db_wrapper = DatabaseWrapper()
+# <Collection Name>_collection = db_wrapper.get_collection('<Collection Name>')
 
-#Code Here
+# Routes Here
 
 if __name__ == '__main__':
     app.run(debug=True)

@@ -1,16 +1,9 @@
-from flask import Flask, jsonify, request, abort
-from pymongo import MongoClient, DESCENDING
-from dotenv import load_dotenv
-import os
-
-load_dotenv()
+from ..DatabaseWrapper import Flask, jsonify, request, abort, DESCENDING, DatabaseWrapper
 
 app = Flask(__name__)
 
-MONGODB_URI = os.getenv('MONGODB_URI')
-client = MongoClient('MONGODB_URI')
-db = client['geek_text_db']
-books_collection = db['books']
+db_wrapper = DatabaseWrapper()
+books_collection = db_wrapper.get_collection('books')
 
 @app.route('/books/genre/<genre>', methods=['GET'])
 def get_books_by_genre(genre):
