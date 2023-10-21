@@ -1,5 +1,5 @@
 from decouple import config
-from pymongo import MongoClient, DESCENDING
+from pymongo import MongoClient
 from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
