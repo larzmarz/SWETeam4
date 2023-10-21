@@ -1,9 +1,13 @@
-from Database import Flask, jsonify, request, abort, DESCENDING, DatabaseWrapper
+from decouple import config
+from pymongo import MongoClient, DESCENDING
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
-db_wrapper = DatabaseWrapper()
-books_collection = db_wrapper.get_collection('books')
+MONGODB_URI = config('MONGODB_URI')
+client = MongoClient(MONGODB_URI)
+db = client['geek_text_db']
+books_collection = db['books']
 
 @app.route('/books/genre/<genre>', methods=['GET'])
 def get_books_by_genre(genre):
