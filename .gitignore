@@ -8,7 +8,7 @@ __pycache__/
 *.egg-info/
 
 # Environment Variables
-.env
+#.env
 
 # IDE Configuration
 .idea/
