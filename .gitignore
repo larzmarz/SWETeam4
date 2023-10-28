@@ -1,0 +1,33 @@
+# Virtual Environment
+venv/
+
+# Python Cache
+__pycache__/
+*.pyc
+*.pyo
+*.egg-info/
+
+# Environment Variables
+.env
+
+# IDE Configuration
+.idea/
+.vscode/
+
+# Logs and Databases
+*.log
+*.sqlite
+
+# OS Generated Files
+.DS_Store
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+*.swp
+
+# Python Distribution / Packaging
+dist/
+build/
+*.egg
+*.egg-info/
+Pipfile.lock

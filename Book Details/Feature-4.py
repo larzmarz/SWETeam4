@@ -1,12 +1,15 @@
+from decouple import config
+from pymongo import MongoClient
 from flask import Flask, jsonify, request, abort
-from pymongo import MongoClient, DESCENDING
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://localhost:27017/')
+MONGODB_URI = config('MONGODB_URI')
+client = MongoClient(MONGODB_URI)
 db = client['geek_text_db']
+# <collection name>_collection = db['<collection name>']
 
-#Code Here
+# Routes Here
 
 if __name__ == '__main__':
     app.run(debug=True)
