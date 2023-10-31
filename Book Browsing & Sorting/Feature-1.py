@@ -9,6 +9,7 @@ client = MongoClient(MONGODB_URI)
 db = client['geek_text_db']
 books_collection = db['books']
 
+# Fetches books by a specified genre.
 @app.route('/books/genre/<genre>', methods=['GET'])
 def get_books_by_genre(genre):
     try:
@@ -21,6 +22,7 @@ def get_books_by_genre(genre):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Retrieves the top 10 best-selling books.
 @app.route('/books/top-sellers', methods=['GET'])
 def get_top_sellers():
     try:
@@ -33,6 +35,7 @@ def get_top_sellers():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Gets books with a rating equal or higher than the specified value.
 @app.route('/books/rating/<float:rating>', methods=['GET'])
 def get_books_by_rating(rating):
     try:
@@ -45,6 +48,7 @@ def get_books_by_rating(rating):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Applies a discount to books by a given publisher.
 @app.route('/books/discount', methods=['PUT', 'PATCH'])
 def discount_books_by_publisher():
     try:
