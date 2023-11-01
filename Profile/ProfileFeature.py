@@ -1,13 +1,11 @@
 from flask import Flask, jsonify, request, abort
 from pymongo import MongoClient, DESCENDING
-from bson import ObjectId
-
 
 app = Flask(__name__)
 
 # MongoDB setup
 client = MongoClient('mongodb://localhost:27017/')
-db = client['geektext']
+db = client['geek_text_db']
 users_collection = db['users']  # Using a MongoDB collection for users
 credit_cards_collection = db['credit_cards']  # Using a MongoDB collection for credit cards
 
