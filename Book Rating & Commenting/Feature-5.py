@@ -1,26 +1,13 @@
 from flask import Flask, request, jsonify, render_template
 from pymongo import MongoClient
 from datetime import datetime
+from decouple import config
 
 app = Flask(__name__)
 
-@app.route('/test')
-def index():
-    return render_template('testCommenting.html')
-
-@app.route('/rating')
-def rating():
-    return render_template('C:/Users/antho/OneDrive/Desktop/news/FW4/testCommenting.html')
-    
-if __name__ == '__main__':
-    app.run(debug=True)
-
-
-# MongoDB setup
-client = MongoClient('mongodb://localhost:27017/')
-# client = MongoClient('mongodb://username:password@localhost:27017/')
-
-db = client['geektext']
+MONGODB_URI = config('MONGODB_URI')
+client = MongoClient(MONGODB_URI)
+db = client['geek_text_db']
 books_collection = db['books']
 
 # API endpoint to retrieve all book IDs
