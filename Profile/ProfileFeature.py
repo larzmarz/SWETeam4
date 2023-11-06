@@ -18,7 +18,7 @@ def create_user():
     if existing_user:
         return jsonify({"message": "Username already exists"}), 400
     users_collection.insert_one(data)
-    return '', 201  # 201 means "Created"
+    return '', 201
 
 # Retrieving a specific user
 @app.route('/users/<string:username>', methods=['GET'])
@@ -35,13 +35,10 @@ def get_user(username):
 def update_user(username):
     data = request.json
 
-    # Check if the user exists
     user = users_collection.find_one({'username': username})
     if not user:
         return jsonify({"message": "User not found"}), 404
-    # Remove the email field from the incoming data to ensure it's not updated
     data.pop('email', None)
-    # Update the user's details
     users_collection.update_one({'username': username}, {"$set": data})
     return jsonify({"message": "User updated successfully"}), 200
 
