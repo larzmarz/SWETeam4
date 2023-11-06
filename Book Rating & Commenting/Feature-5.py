@@ -2,7 +2,10 @@ from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from datetime import datetime
 from decouple import config
+<<<<<<< Updated upstream
 #anthony
+=======
+>>>>>>> Stashed changes
 app = Flask(__name__)
 
 MONGODB_URI = config('MONGODB_URI')
