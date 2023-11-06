@@ -1,9 +1,11 @@
-from flask import Flask, jsonify, request, abort
+from decouple import config
 from pymongo import MongoClient, DESCENDING
+from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
-client = MongoClient('mongodb://localhost:27017/')
+MONGODB_URI = config('MONGODB_URI')
+client = MongoClient(MONGODB_URI)
 db = client['geek_text_db']
 books_collection = db['books']
 
