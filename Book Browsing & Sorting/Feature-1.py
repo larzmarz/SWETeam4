@@ -4,6 +4,7 @@ from flask import Flask, jsonify, request, abort
 
 app = Flask(__name__)
 
+# Connects to the MongoDB database.
 MONGODB_URI = config('MONGODB_URI')
 client = MongoClient(MONGODB_URI)
 db = client['geek_text_db']
