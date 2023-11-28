@@ -1,16 +1,11 @@
 from flask import Flask, request, jsonify
 from pymongo import MongoClient
 from datetime import datetime
-<<<<<<< Updated upstream
-from decouple import config
-=======
-from decouple import config 
->>>>>>> Stashed changes
 app = Flask(__name__)
 
-MONGODB_URI = config('MONGODB_URI')
+MONGODB_URI = 'mongodb+srv://SWE4:SWET4@cluster0.ln7pqzu.mongodb.net/geek_text_db'
 client = MongoClient(MONGODB_URI)
-db = client['geek_text_db']
+db = client['geektext']
 books_collection = db['books']
 
 # API endpoint to create a rating for a book
@@ -21,12 +16,16 @@ def rate_book():
     user_id = data['user_id']
     rating = data['rating']
     datestamp = datetime.now()
-    
+
     # Check if the user has already rated the book
     book = books_collection.find_one({"_id": book_id})
+
+    if book is None:
+        abort(404, description=f"Book with ID {book_id} not found")
+
     ratings = book.get('ratings', [])
     existing_rating = next((r for r in ratings if r['user_id'] == user_id), None)
-    
+
     if existing_rating:
         # Update the existing rating
         existing_rating['rating'] = rating
@@ -35,21 +34,35 @@ def rate_book():
         return jsonify({"message": "Rating updated successfully"}), 200
     else:
         # Save the new rating to MongoDB
-        books_collection.update_one({"_id": book_id}, {"$push": {"ratings": {"user_id": user_id, "rating": rating, "datestamp": datestamp}}})
+        books_collection.update_one(
+            {"_id": book_id},
+            {"$push": {"ratings": {"user_id": user_id, "rating": rating, "datestamp": datestamp}}}
+        )
         return jsonify({"message": "Rating added successfully"}), 200
+
 
 # API endpoint to create a comment for a book
 @app.route('/comment-book', methods=['POST'])
 def comment_book():
-    data = request.get_json()
-    book_id = data['book_id']
-    user_id = data['user_id']
-    comment = data['comment']
-    datestamp = datetime.now()
+    book_id = request.args.get('book_id')
+    user_id = request.args.get('user_id')
+    comment = request.args.get('comment')
+
+    if not (book_id and user_id and comment):
+        abort(400, description="Missing required parameters")
 
     # Save the comment to MongoDB
-    books_collection.update_one({"_id": book_id}, {"$push": {"comments": {"user_id": user_id, "comment": comment, "datestamp": datestamp}}})
+    books_collection.update_one(
+        {"_id": book_id},
+        {"$push": {"comments": {"user_id": user_id, "comment": comment, "datestamp": datetime.now()}}}
+    )
+
     return jsonify({"message": "Comment added successfully"}), 200
+
+# Handle 404 errors for the /comment-book endpoint
+@app.route('/comment-book', methods=['GET'])
+def comment_book_not_found():
+    return jsonify({"error": "Resource not found", "status_code": 404}), 404
 
 # API endpoint to retrieve comments for a book
 @app.route('/get-comments/<string:book_id>', methods=['GET'])
@@ -70,4 +83,4 @@ def get_average_rating(book_id):
     return jsonify({"average_rating": average_rating}), 200
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, host='127.0.0.1', port=5000)
